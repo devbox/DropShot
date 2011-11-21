@@ -8,6 +8,15 @@
 
 #import "ViewController.h"
 
+
+#include <stdio.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#define PORT 1234
+
+
 @implementation ViewController
 @synthesize tropfenAnzahlEingabe;
 @synthesize tropfenZeitEingabe;
@@ -91,6 +100,32 @@
     self.tropfenZeitAusgabe.text = self.tropfenZeitEingabe.text;
     self.tropfenGroesseAusgabe.text = self.tropfenGroesseEingabe.text;
     self.blitzZeitAusgabe.text = self.blitzVerzoegerungEingabe.text;
+    
+    
+    char buff[BUFSIZ];
+    char msg[BUFSIZ];
+    int s;
+    struct sockaddr_in cli;
+    struct hostent *server;
+    //  char str [100];
+    server = gethostbyname("192.168.0.101");
+    bzero(&cli, sizeof(cli));
+    cli.sin_family = AF_INET;
+    cli.sin_addr.s_addr = htonl(INADDR_ANY);
+    cli.sin_addr.s_addr = ((struct in_addr *) \
+                           (server->h_addr))->s_addr;
+    cli.sin_port = htons(PORT);
+    s = socket(AF_INET, SOCK_STREAM, 0);
+    connect(s, (void *)&cli, sizeof(cli));
+    printf("Nachricht eingeben\n");
+    
+    NSString *wert = self.tropfenAnzahlEingabe.text;
+    char *str = [wert UTF8String];
+    
+    strcat(str, "\n");
+    write(s, str, strlen(str));
+    close(s);  
+    
     
 }
 @end
