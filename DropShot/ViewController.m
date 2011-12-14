@@ -101,14 +101,18 @@
     self.tropfenGroesseAusgabe.text = self.tropfenGroesseEingabe.text;
     self.blitzZeitAusgabe.text = self.blitzVerzoegerungEingabe.text;
     
+    int sendVar1 = [self.tropfenAnzahlEingabe.text intValue];
+    int sendVar2 = [self.tropfenZeitEingabe.text intValue];
+    int sendVar3 = [self.tropfenGroesseEingabe.text intValue];
+    int sendVar4 = [self.blitzVerzoegerungEingabe.text intValue];
     
-    char buff[BUFSIZ];
-    char msg[BUFSIZ];
+    NSString *transmit = [NSString stringWithFormat:@"%i %i %i %i",sendVar1, sendVar2, sendVar3, sendVar4];
+    
     int s;
     struct sockaddr_in cli;
     struct hostent *server;
-    //  char str [100];
-    server = gethostbyname("192.168.0.101");
+    char str [512];
+    server = gethostbyname("192.168.0.30");
     bzero(&cli, sizeof(cli));
     cli.sin_family = AF_INET;
     cli.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -117,12 +121,12 @@
     cli.sin_port = htons(PORT);
     s = socket(AF_INET, SOCK_STREAM, 0);
     connect(s, (void *)&cli, sizeof(cli));
-    printf("Nachricht eingeben\n");
-    
-    NSString *wert = self.tropfenAnzahlEingabe.text;
-    char *str = [wert UTF8String];
-    
+//  printf("Nachricht eingeben\n");
+//  NSString *wert = self.tropfenAnzahlEingabe.text;
+//  strcpy(str, [wert UTF8String]);
+    strcpy(str, [transmit UTF8String]);
     strcat(str, "\n");
+    NSLog (@"%@",transmit);
     write(s, str, strlen(str));
     close(s);  
     
