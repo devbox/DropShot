@@ -96,22 +96,20 @@
 
 - (IBAction)buttonPressed:(id)sender {
     
-    self.tropfenAnzahlAusgabe.text = self.tropfenAnzahlEingabe.text;
-    self.tropfenZeitAusgabe.text = self.tropfenZeitEingabe.text;
-    self.tropfenGroesseAusgabe.text = self.tropfenGroesseEingabe.text;
-    self.blitzZeitAusgabe.text = self.blitzVerzoegerungEingabe.text;
-    
     int sendVar1 = [self.tropfenAnzahlEingabe.text intValue];
     int sendVar2 = [self.tropfenZeitEingabe.text intValue];
     int sendVar3 = [self.tropfenGroesseEingabe.text intValue];
     int sendVar4 = [self.blitzVerzoegerungEingabe.text intValue];
     
     NSString *transmit = [NSString stringWithFormat:@"%i %i %i %i",sendVar1, sendVar2, sendVar3, sendVar4];
+
+
+// ------------- Daten Senden durch Socket "s" ----------    
     
     int s;
     struct sockaddr_in cli;
     struct hostent *server;
-    char str [512];
+    char str [2048];    // puffer probleme durch gesamtsring?
     server = gethostbyname("192.168.0.30");
     bzero(&cli, sizeof(cli));
     cli.sin_family = AF_INET;
@@ -121,13 +119,33 @@
     cli.sin_port = htons(PORT);
     s = socket(AF_INET, SOCK_STREAM, 0);
     connect(s, (void *)&cli, sizeof(cli));
-//  printf("Nachricht eingeben\n");
-//  NSString *wert = self.tropfenAnzahlEingabe.text;
-//  strcpy(str, [wert UTF8String]);
     strcpy(str, [transmit UTF8String]);
     strcat(str, "\n");
     NSLog (@"%@",transmit);
     write(s, str, strlen(str));
+
+    
+//--------------- Daten empfangen durch Socket "s" -------------    
+   
+    char buff[2048];   // puffer probleme durch gesamtsring?
+    unsigned int count; 
+    int recvVar1, recvVar2, recvVar3, recvVar4;
+    listen(s, 5);
+    count = recv(s, buff, sizeof(buff)-1, 0);   
+    NSLog (@"%i",count);
+    NSString *stringEmpfangen = [NSString stringWithUTF8String:buff];
+    NSLog (@"%@",stringEmpfangen);
+    sscanf(buff, "%d %d %d %d", &recvVar1, &recvVar2, &recvVar3, &recvVar4);
+    NSLog (@"gesetzter Wert 1: %i", recvVar1);
+    NSLog (@"gesetzter Wert 2: %i", recvVar2);
+    NSLog (@"gesetzter Wert 3: %i", recvVar3);
+    NSLog (@"gesetzter Wert 4: %i", recvVar4);
+    
+    self.tropfenAnzahlAusgabe.text = [NSString stringWithFormat:@"arVar 1: %i", recvVar1];
+    self.tropfenZeitAusgabe.text = [NSString stringWithFormat:@"arVar 2: %i", recvVar2];
+    self.tropfenGroesseAusgabe.text = [NSString stringWithFormat:@"arVar 3: %i", recvVar3];
+    self.blitzZeitAusgabe.text = [NSString stringWithFormat:@"arVar 4: %i", recvVar4];
+    
     close(s);  
     
     
