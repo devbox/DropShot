@@ -100,8 +100,9 @@
     int sendVar2 = [self.tropfenZeitEingabe.text intValue];
     int sendVar3 = [self.tropfenGroesseEingabe.text intValue];
     int sendVar4 = [self.blitzVerzoegerungEingabe.text intValue];
+    int sendVar5 = 1;
     
-    NSString *transmit = [NSString stringWithFormat:@"%i %i %i %i",sendVar1, sendVar2, sendVar3, sendVar4];
+    NSString *transmit = [NSString stringWithFormat:@"%i %i %i %i %i",sendVar1, sendVar2, sendVar3, sendVar4, sendVar5];
 
 
 // ------------- Daten Senden durch Socket "s" ----------    
@@ -129,17 +130,18 @@
    
     char buff[2048];   // puffer probleme durch gesamtsring?
     unsigned int count; 
-    int recvVar1, recvVar2, recvVar3, recvVar4;
+    int recvVar1, recvVar2, recvVar3, recvVar4, recvVar5;  //recvVar5 wird von iPhone immer 1 sein, da es auf Arduino Seite als Start der Anlage dient, und danach auf Arduino Seite wieder auf 0 gesetzt wird.
     listen(s, 5);
     count = recv(s, buff, sizeof(buff)-1, 0);   
     NSLog (@"%i",count);
     NSString *stringEmpfangen = [NSString stringWithUTF8String:buff];
     NSLog (@"%@",stringEmpfangen);
-    sscanf(buff, "%d %d %d %d", &recvVar1, &recvVar2, &recvVar3, &recvVar4);
+    sscanf(buff, "%d %d %d %d %d", &recvVar1, &recvVar2, &recvVar3, &recvVar4, &recvVar5);
     NSLog (@"gesetzter Wert 1: %i", recvVar1);
     NSLog (@"gesetzter Wert 2: %i", recvVar2);
     NSLog (@"gesetzter Wert 3: %i", recvVar3);
     NSLog (@"gesetzter Wert 4: %i", recvVar4);
+    NSLog (@"gesetzter Wert 5: %i", recvVar5);
     
     self.tropfenAnzahlAusgabe.text = [NSString stringWithFormat:@"arVar 1: %i", recvVar1];
     self.tropfenZeitAusgabe.text = [NSString stringWithFormat:@"arVar 2: %i", recvVar2];
