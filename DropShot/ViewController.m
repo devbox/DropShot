@@ -18,7 +18,7 @@
 
 
 @implementation ViewController
-@synthesize tropfenAnzahlEingabe;
+@synthesize tropfenAnzahlEingabe;    //wird momentan verwendet für die Loop Anzahl!
 @synthesize tropfenZeitEingabe;
 @synthesize tropfenGroesseEingabe;
 @synthesize blitzVerzoegerungEingabe;
@@ -29,7 +29,7 @@
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
-    [self.tropfenAnzahlEingabe resignFirstResponder];
+    [self.tropfenAnzahlEingabe resignFirstResponder]; //wird momentan verwendet für die Loop Anzahl!
     [self.tropfenZeitEingabe resignFirstResponder];
     [self.tropfenGroesseEingabe resignFirstResponder];
     [self.blitzVerzoegerungEingabe resignFirstResponder];
@@ -55,7 +55,7 @@
 
 - (void)viewDidUnload
 {
-    [self setTropfenAnzahlEingabe:nil];
+    [self setTropfenAnzahlEingabe:nil]; //wird momentan verwendet für die Loop Anzahl!
     [self setTropfenZeitEingabe:nil];
     [self setTropfenGroesseEingabe:nil];
     [self setBlitzVerzoegerungEingabe:nil];
@@ -96,7 +96,7 @@
 
 - (IBAction)buttonPressed:(id)sender {
     
-    int sendVar1 = [self.tropfenAnzahlEingabe.text intValue];
+    int sendVar1 = [self.tropfenAnzahlEingabe.text intValue];    //wird momentan verwendet für die Loop Anzahl!
     int sendVar2 = [self.tropfenZeitEingabe.text intValue];
     int sendVar3 = [self.tropfenGroesseEingabe.text intValue];
     int sendVar4 = [self.blitzVerzoegerungEingabe.text intValue];
@@ -130,7 +130,7 @@
    
     char buff[2048];   // puffer probleme durch gesamtsring?
     unsigned int count; 
-    int recvVar1, recvVar2, recvVar3, recvVar4, recvVar5;  //recvVar5 wird von iPhone immer 1 sein, da es auf Arduino Seite als Start der Anlage dient, und danach auf Arduino Seite wieder auf 0 gesetzt wird.
+    int recvVar1, recvVar2, recvVar3, recvVar4, recvVar5;  //recvVar5 wird von iPhone immer 1 sein, da es auf Arduino Seite als Start der Anlage dient, und danach auf Arduinoseite wieder auf 0 gesetzt wird.
     listen(s, 5);
     count = recv(s, buff, sizeof(buff)-1, 0);   
     NSLog (@"%i",count);
@@ -149,7 +149,7 @@
     self.blitzZeitAusgabe.text = [NSString stringWithFormat:@"arVar 4: %i", recvVar4];
     
     close(s);  
-    
+
     
 }
 @end
